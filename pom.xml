@@ -453,13 +453,16 @@
             <version>${poi.version}</version>
         </dependency>
 
-
-
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.20</version>
+        </dependency>
 
     </dependencies>
     <build>
         <finalName>learnjeesite</finalName>
-        <outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/classes/</outputDirectory>
+        <outputDirectory>${project.basedir}/target/classes/</outputDirectory>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
