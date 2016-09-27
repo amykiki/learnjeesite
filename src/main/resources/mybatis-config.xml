@@ -14,6 +14,7 @@
         <!--默认值为 SESSION，这种情况下会缓存一个会话中执行的所有查询-->
         <setting name="localCacheScope" value="SESSION"/>
         <setting name="logImpl" value="LOG4J2"/>
+        <!-- 设置但JDBC类型为空时,某些驱动程序 要指定值,default:OTHER，插入空值时不需要指定类型 -->
+        <setting name="jdbcTypeForNull" value="NULL"/>
     </settings>
-
 </configuration>
