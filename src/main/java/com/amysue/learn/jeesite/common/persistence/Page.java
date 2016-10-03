@@ -51,4 +51,24 @@ public class Page<T> {
     public int getPageSize() {
         return pageSize;
     }
+
+    public int getPageNo() {
+        return pageNo;
+    }
+
+    public long getCount() {
+        return count;
+    }
+
+    public int getFirstResult() {
+        int firstResult = (getPageNo() - 1) * getPageSize();
+        if (firstResult >= getCount()) {
+            firstResult = 0;
+        }
+        return firstResult;
+    }
+
+    public int getMaxResults() {
+        return getPageSize();
+    }
 }

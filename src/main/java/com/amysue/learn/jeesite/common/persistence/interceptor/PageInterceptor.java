@@ -9,6 +9,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.plugin.*;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.apache.log4j.Logger;
 
 import java.io.Serializable;
 import java.util.Properties;
@@ -19,6 +20,7 @@ import java.util.Properties;
 @Intercepts(@Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}))
 public class PageInterceptor implements Interceptor, Serializable {
     private static final String PAGE = "page";
+    private static final Logger logger = Logger.getLogger(PageInterceptor.class);
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         final Object[] args = invocation.getArgs();
