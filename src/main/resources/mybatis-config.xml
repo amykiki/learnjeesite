@@ -17,4 +17,12 @@
         <!-- 设置但JDBC类型为空时,某些驱动程序 要指定值,default:OTHER，插入空值时不需要指定类型 -->
         <setting name="jdbcTypeForNull" value="NULL"/>
     </settings>
+    
+    <typeAliases>
+        <typeAlias type="com.amysue.learn.jeesite.common.persistence.Page" alias="Page"/>
+    </typeAliases>
+    
+    <plugins>
+        <plugin interceptor="com.amysue.learn.jeesite.common.persistence.interceptor.PageInterceptor"></plugin>
+    </plugins>
 </configuration>

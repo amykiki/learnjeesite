@@ -33,7 +33,7 @@ CREATE TABLE sys_area(
 CREATE TABLE sys_dict(
   id VARCHAR(64) NOT NULL COMMENT '编号',
   value VARCHAR(100) NOT NULL COMMENT '数据值',
-  lable VARCHAR(100) NOT NULL COMMENT '标签名',
+  label VARCHAR(100) NOT NULL COMMENT '标签名',
   type VARCHAR(100) NOT NULL COMMENT '类型',
   description VARCHAR(100) NOT NULL COMMENT '描述',
   sort DECIMAL(10,0) NOT NULL COMMENT '排序（升序）',
@@ -118,7 +118,7 @@ CREATE TABLE sys_role_office(
 CREATE TABLE sys_user(
   id VARCHAR(64) NOT NULL COMMENT '编号',
   company_id VARCHAR(64) NOT NULL COMMENT '归属公司',
-  department_id VARCHAR(64) NOT NULL COMMENT '归属部门',
+  office_id VARCHAR(64) NOT NULL COMMENT '归属部门',
   login_name VARCHAR(100) NOT NULL COMMENT '登录名',
   password VARCHAR(100) NOT NULL COMMENT '密码',
   no VARCHAR(100) COMMENT '工号',

@@ -3,9 +3,10 @@ package com.amysue.learn.jeesite.common.persistence.interceptor;
 import com.amysue.learn.jeesite.common.config.Global;
 import com.amysue.learn.jeesite.common.persistence.Page;
 import com.amysue.learn.jeesite.common.persistence.dialect.Dialect;
+import com.amysue.learn.jeesite.common.utils.Reflections;
+import com.amysue.learn.jeesite.common.utils.StringUtils;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.executor.ExecutorException;
-import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ParameterMapping;
@@ -16,9 +17,11 @@ import org.apache.ibatis.scripting.xmltags.ForEachSqlNode;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
+import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -81,11 +84,53 @@ public class SQLHelper {
      * @param boundSql
      * @param log
      * @return 总记录数
+     * @throws java.sql.SQLException
      */
     public static int getCount(final String sql, final Connection connection, final MappedStatement mappedStatement,
-            final Object parameterObject, final BoundSql boundSql, Log log) {
+            final Object parameterObject, final BoundSql boundSql, Logger log) throws SQLException {
         String dbName = Global.getConfig("jdbc.type");
-        return 0;
+        final String countSql;
+        if ("oracl".equals(dbName)) {
+            countSql = "select count(1) from (" + sql + ") tmp_count";
+        } else {
+            countSql = "select count(1) from (" + removeOrders(sql) + ") tmp_count";
+        }
+        Connection conn = connection;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("COUNT SQL: " + StringUtils.replaceEach(countSql, new String[]{"\n", "\t"}, new String[]{" ", " "}));
+            }
+            if (conn == null) {
+                conn = mappedStatement.getConfiguration().getEnvironment().getDataSource().getConnection();
+            }
+            ps = conn.prepareStatement(countSql);
+            BoundSql countBS = new BoundSql(mappedStatement.getConfiguration(), countSql, boundSql.getParameterMappings(), parameterObject);
+            //=========解决Mybatis分页foreach参数失效 Begin======
+            if (Reflections.getFieldValue(boundSql, "metaParameters") != null) {
+                MetaObject mo = (MetaObject)Reflections.getFieldValue(boundSql, "metaParameters");
+                Reflections.setFieldValue(countBS, "metaParameters", mo);
+            }
+            //=========解决Mybatis分页foreach参数失效 End======
+            SQLHelper.setParameters(ps, mappedStatement, countBS, parameterObject);
+            rs = ps.executeQuery();
+            int count = 0;
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+            return count;
+        } finally {
+            if (rs != null) {
+                rs.close();
+            }
+            if (ps != null) {
+                ps.close();
+            }
+            if (conn != null) {
+                conn.close();
+            }
+        }
     }
 
     public static String generatePageSql(String sql, Page<?> page, Dialect dialect) {
