@@ -19,11 +19,8 @@ static {
   private static java.util.Vector _jspx_dependants;
 
   static {
-    _jspx_dependants = new java.util.Vector(4);
+    _jspx_dependants = new java.util.Vector(1);
     _jspx_dependants.add("/WEB-INF/views/include/taglib.jsp");
-    _jspx_dependants.add("/WEB-INF/classes/META-INF/shiros.tld");
-    _jspx_dependants.add("/WEB-INF/classes/META-INF/fns.tld");
-    _jspx_dependants.add("/WEB-INF/classes/META-INF/fnc.tld");
   }
 
   private org.apache.jasper.runtime.TagHandlerPool _jspx_tagPool_c_set_var_value_nobody;

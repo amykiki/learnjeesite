@@ -32,6 +32,7 @@ public interface UserDao extends UserDaoCustom, CrudRepository<User, Long> {
 	public int deleteById(Long id);
 	
 	@Modifying
+	@Transactional
 	@Query("update User set password=?1 where id = ?2")
 	public int updatePasswordById(String newPassword, Long id);
 	

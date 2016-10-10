@@ -9,8 +9,8 @@
         <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace" additivity="false">
             <appender-ref ref = "Console"/>
         </logger>
-        <!--<root level="info">-->
-        <root level="debug">
+        <root level="info">
+        <!--<root level="debug">-->
             <appender-ref ref="Console"/>
         </root>
     </loggers>
