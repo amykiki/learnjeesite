@@ -58,7 +58,11 @@ public class SystemService extends BaseService {
 	private SystemRealm systemRealm;
 	
 	//-- User Service --//
-	
+
+
+	public SystemService() {
+	}
+
 	public User getUser(Long id) {
 		return userDao.findOne(id);
 	}

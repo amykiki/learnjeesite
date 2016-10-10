@@ -6,7 +6,6 @@
 	default-lazy-init="true">
 
 	<description>Shiro Configuration</description>
-
 	<!-- 定义 Shiro 主要业务对象 -->
 	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
 		<property name="realm" ref="systemRealm" />

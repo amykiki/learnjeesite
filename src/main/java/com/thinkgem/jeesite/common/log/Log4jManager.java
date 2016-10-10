@@ -5,14 +5,17 @@
  */
 package com.thinkgem.jeesite.common.log;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
 import org.slf4j.LoggerFactory;
-import org.springframework.jmx.export.annotation.ManagedAttribute;
-import org.springframework.jmx.export.annotation.ManagedOperation;
-import org.springframework.jmx.export.annotation.ManagedOperationParameter;
-import org.springframework.jmx.export.annotation.ManagedOperationParameters;
-import org.springframework.jmx.export.annotation.ManagedResource;
+import org.springframework.jmx.export.annotation.*;
+
+//import org.apache.log4j.Level;
+//import org.apache.log4j.Logger;
 
 /**
  * 基于JMX动态配置Log4J日志级别，并控制Trace开关的MBean.
@@ -34,15 +37,19 @@ public class Log4jManager {
 
 	@ManagedAttribute(description = "Level of the root logger")
 	public String getRootLoggerLevel() {
-		Logger logger = Logger.getRootLogger();
-		return logger.getEffectiveLevel().toString();
+		Logger logger = LogManager.getRootLogger();
+//		return logger.getEffectiveLevel().toString();
+        return logger.getLevel().toString();
 	}
 
 	@ManagedAttribute
 	public void setRootLoggerLevel(String newLevel) {
-		Logger logger = Logger.getRootLogger();
 		Level level = Level.toLevel(newLevel);
-		logger.setLevel(level);
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        Configuration config = ctx.getConfiguration();
+        LoggerConfig loggerConfig = config.getLoggerConfig(LogManager.ROOT_LOGGER_NAME);
+        loggerConfig.setLevel(level);
+        ctx.updateLoggers();
 		managerLogger.info("设置Root Logger 级别为{}", newLevel);
 	}
 
@@ -76,8 +83,9 @@ public class Log4jManager {
 	@ManagedOperation(description = "Get logging level of the logger")
 	@ManagedOperationParameters({ @ManagedOperationParameter(name = "loggerName", description = "Logger name") })
 	public String getLoggerLevel(String loggerName) {
-		Logger logger = Logger.getLogger(loggerName);
-		return logger.getEffectiveLevel().toString();
+//		Logger logger = Logger.getLogger(loggerName);
+        Logger logger = LogManager.getLogger(loggerName);
+        return logger.getLevel().toString();
 	}
 
 	/**
@@ -88,10 +96,13 @@ public class Log4jManager {
 	@ManagedOperationParameters({ @ManagedOperationParameter(name = "loggerName", description = "Logger name"),
 			@ManagedOperationParameter(name = "newlevel", description = "New level") })
 	public void setLoggerLevel(String loggerName, String newLevel) {
-		Logger logger = Logger.getLogger(loggerName);
-		Level level = Level.toLevel(newLevel);
-		logger.setLevel(level);
-		managerLogger.info("设置{}级别为{}", loggerName, newLevel);
+        Level level = Level.toLevel(newLevel);
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        Configuration config = ctx.getConfiguration();
+        LoggerConfig loggerConfig = config.getLoggerConfig(loggerName);
+        loggerConfig.setLevel(level);
+        ctx.updateLoggers();
+        managerLogger.info("设置{}级别为{}", loggerName, newLevel);
 	}
 
 	/**
